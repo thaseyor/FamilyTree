@@ -1,0 +1,108 @@
+ //       $.post(
+//   "php/writeCords.php",
+//   {
+//     y: new_y,
+//     x: new_x,
+//     id: ind
+//   }
+// );
+ 
+ 
+ 
+ $query ="SELECT * FROM `connections`";
+     $result2 = mysqli_query($link, $query) or die("Ошибка " . mysqli_error($link)); 
+     if($result2)
+{
+    $rows2 = mysqli_num_rows($result2); // количество полученных строк
+    for ($i = 0 ; $i < $rows2 ; ++$i)
+    {
+    	$id = $i +1;
+        echo "\n<canvas id='canvas$id'></canvas>";
+    }
+}
+    echo '
+	<div class="nav">
+    	<a href="setNew.php"><img id="newPic" class="edit" title="add" src="imgs/user.webp"></a>
+    	<img id="work" title="edit" src="imgs/edit.png" class="edit" onclick="work()">
+    	<img id="unWork" title="edit" src="imgs/edit.png" onclick="unWork()">
+    </div>';
+     $query ="SELECT * FROM `familytree`";
+     $result = mysqli_query($link, $query) or die("Ошибка " . mysqli_error($link)); 
+     if($result)
+{
+    $rows = mysqli_num_rows($result); // количество полученных строк
+    for ($i = 0 ; $i < $rows ; ++$i)
+    {
+        $row = mysqli_fetch_row($result);
+        echo "<div class='block' id='block$row[0]' onmousedown='bubble($row[0])' style='top: $row[2]px; left: $row[1]px;'>
+        <div id='connect$row[0]' class='nonDisplay'>
+	        <div class='up' onclick='connect($row[0])'>+</div>
+	        <div class='left' onclick='connect($row[0])'><div class='semiAbbys'>+</div></div>
+	        <div class='right' onclick='connect($row[0])'><div class='semiAbbys'>+</div></div>
+	        <div class='down' onclick='connect($row[0])'>+</div>
+        </div>
+        <div id='plus$row[0]' class='nonDisplay'>
+	        <div class='corner' onclick='add($row[0])'><div class='abbys'>+</div></div>
+        </div>
+	    <div class='allBlock'>
+	    	<div  id='unknownPhoto$row[0]' class='allPhoto'>
+	    	<form id='upload-container$row[0]'  action='php/upload.php?id=$row[0]' method=post enctype=multipart/form-data>
+	    	<input class='hide' id='file-input$row[0]' accept='image/*' type=file value='' name='uploadfile'>
+	    	<label class='fileGet' id='uploadBox$row[0]' for='file-input$row[0]'>
+	        <img title='upload' src='imgs/unknownPhoto.jpg' class='Photo'>
+	        <div class='someText'>Выберите файл</div>
+		        </label>
+		        <input type=submit id='submit$row[0]' class='hide'>
+		        </form>
+	        </div>
+	        <div class='allBlock'>
+		        <a href='Photos/$row[0]/main.jpg' id='Avatar$row[0]'>
+			        <div class='displayPhoto'>
+			        	<img title='upload' id='photo$row[0]' class='Photo'>
+			        </div>
+		        </a>
+		        <div class='allInfo'>
+		        	<img title='Delete' id='bin$row[0]' src='imgs/bin1.png' class='bin' onclick='delet($row[0])'>
+			     	<img title='info' id='showData$row[0]' src='imgs/info.png' class='edit' onclick='inf($row[0])'>
+			        Имя: $row[3]<br>
+			     	Дата Рождения: $row[4]<br>";
+			     	if(!empty($row[7])){
+			     	    echo "Дата Смерти: $row[7]";
+			     	}
+			     	echo "
+				    <div class='allBlock'>
+				     	<p id='fileName$row[0]' class='nonDisplay'></p>
+				     	<label class='fileGet' for='submit$row[0]'>
+				     	 <img title='yes' id='yes$row[0]' src='imgs/yes.png' class='choose'>
+				     	 </label>
+				     	 <img title='no' id='no$row[0]' src='imgs/no.png' class='choose' onclick='showAgain($row[0])'>
+				    </div>
+			    </div>
+	     	</div>
+	     </div>
+     	</div>";
+    }
+    mysqli_free_result($result);
+}
+require_once('footer.php');
+ include 'js/add.php';
+ echo "<script>";
+    $query2 ="SELECT * FROM `connections`";
+     $result2 = mysqli_query($link, $query2) or die("Ошибка " . mysqli_error($link)); 
+     if($result2)
+{
+    $rows2 = mysqli_num_rows($result2); // количество полученных строк
+    for ($i = 0 ; $i < $rows2 ; ++$i)
+    {
+        $row = mysqli_fetch_row($result2);
+        $id = $i +1;
+        if($row[2]!=0){
+            // echo "\nsetInterval( line, 10, $row[1],$row[2],$id);";
+            echo "\n line($row[1],$row[2],$id);";
+        }
+    }
+}
+     mysqli_close($link);
+echo "</script>";
+    include 'js/move.php';
+    include 'js/forIndex.php';
