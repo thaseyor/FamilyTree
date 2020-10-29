@@ -15,7 +15,14 @@ echo "
   <div class='media-left'>
     <figure class='image is-128x128'>";
     if(file_exists("Photos/$row[0]/main.jpg")){
-      echo " <a href='Photos/$row[0]/main.jpg'><img src='Photos/$row[0]/main.jpg' onclick='header(Photos/$row[0]/main.jpg)' alt='Image'></a>";
+      echo "  <img src='Photos/$row[0]/main.jpg' onclick='toggle(".'"main"'.")' style='cursor:pointer' alt='Image'>
+      <div class='modal' id='modal_main'>
+  <div class='modal-background'></div>
+  <div class='modal-content'>
+  <img src='Photos/$row[0]/main.jpg' alt='Image'>
+  </div>
+  <button class='modal-close is-large' aria-label='close'></button>
+</div>";
     }
     else{
       echo "<img src='https://bulma.io/images/placeholders/64x64.png' alt='Image'>";
@@ -83,10 +90,6 @@ if (file_exists($dir)) {
   <script>
   function toggle(id){
     document.getElementById('modal_'+id).classList.add('is-active');
-    document.documentElement.classList.add('is-clipped');
-  }
-  function remove(){
-    document.documentElement.classList.remove('is-clipped');
   }
   </script>
   ";

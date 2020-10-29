@@ -14,7 +14,7 @@ echo "<div class='box' id='block_$row[0]' style='width:600px;position:absolute; 
   <div class='media-left'>
     <figure class='image is-64x64'>";
     if(file_exists("Photos/$row[0]/main.jpg")){
-      echo " <img src='Photos/$row[0]/main.jpg' onclick='toggle($row[0])' alt='Image'>
+      echo " <img src='Photos/$row[0]/main.jpg' onclick='toggle($row[0])' style='cursor:pointer' alt='Image'>
       <div class='modal' id='modal_$row[0]'>
   <div class='modal-background' onclick='setTimeout(remove, 200 )'></div>
   <div class='modal-content'>
