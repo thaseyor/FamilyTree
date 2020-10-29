@@ -129,4 +129,26 @@ if(isset($_POST['delete'])){
    }
    mysqli_close($link);
 }
+
+if(isset($_POST['newValue'])){
+    $id= $_POST['id'];
+$newValue= $_POST['newValue'].'.png';
+$oldValue=$_POST['oldValue'].'.png';
+$dir    = 'Photos/'. $id. '/gallery'.'/';
+if(file_exists($newValue)) 
+ {  
+   echo "Error While Renaming $oldValue" ; 
+ } 
+else
+ { 
+   if(rename( $dir.$oldValue, $dir.$newValue)) 
+     {  
+        echo "Successfully Renamed $oldValue to $newValue" ; 
+     } 
+     else
+     { 
+        echo "A File With The Same Name Already Exists" ; 
+     } 
+  } 
+}
 ?>

@@ -146,7 +146,7 @@ if (file_exists($dir)) {
               </figure>
               
               <div class='control'  style='bottom:0;position:absolute;margin-bottom:20px;width:inherit'>
-              <input class='input' type='text' value='".substr($files[$j], 0, strrpos($files[$j], "."))."'>
+              <input class='input' type='text' onChange='fileNameChange(".'"'.substr($files[$j], 0, strrpos($files[$j], ".")).'"'.")' id='filename_".substr($files[$j], 0, strrpos($files[$j], "."))."' value='".substr($files[$j], 0, strrpos($files[$j], "."))."'>
               </div>
             </article>
           </div>
@@ -237,6 +237,19 @@ document.getElementById('choseClr').style.color = textColor;
   }
   function toggle(id){
     document.getElementById('modal_'+id).classList.add('is-active');
+  }
+  function fileNameChange(number){
+    var newValue = document.getElementById('filename_'+number).value;
+    if(newValue!=''){
+    var oldValue = number;
+    $.post(
+      'handler.php',
+     {
+       id: $row[0],
+       newValue:newValue,
+       oldValue:oldValue
+     }
+   );}
   }
     </script>
  
