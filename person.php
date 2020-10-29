@@ -19,6 +19,7 @@ if(!isset($_GET['change'])){
 else if($row['rights']=='editer'&&$_GET['change']==true){
     include "components/person_editer.php";
     include "js/deleteBlock.php";
+    echo "<script src='js\dropzone.min.js'></script>";
 }
 require_once('components/footer.php');
 

@@ -78,10 +78,12 @@ echo "
     </div>
     <button class='button' onclick='deleteConnection();'>Удалить</button>
   </div>
+
   <div class='column'><br>
+  <form action='person.php?id=$row[0]&change=true' enctype='multipart/form-data' method='post' id='form'>
   <div class='file is-centered'>
   <label class='file-label'>
-    <input class='file-input' type='file' name='resume'>
+    <input class='file-input' id='file' type='file' name='file'>
     <span class='file-cta'>
       <span class='file-icon'>
         <i class='fas fa-upload'></i>
@@ -92,14 +94,17 @@ echo "
     </span>
   </label>
   </div>
+  </form>
+  <div class='buttons has-addons is-centered ' style='margin-top:8px;'><button class='button is-danger' onclick="."'".'toggle("deletePhoto")'."'".">Удалить фото</button></div>
   </div>
+  
   <div class='column'><br><div>
   <button id='choseClr' class=".'"'."button jscolor {valueElement:'#FFF33F', onFineChange:'setTextColor(this,$row[0],2)'}".'"'.">Выберите цвет</button>
 <input type='text' oninput='setTextColor(0,$row[0],1)' id='hex' value='$row[7]' style='width:150px;' class='input'>
   </div>
   </div>
 </div></div></section>
-<div class='modal' id='modal'>
+<div class='modal' id='modal_deleteAll'>
   <div class='modal-background'></div>
   <div class='modal-content'>
     <div class='box'>
@@ -111,7 +116,28 @@ echo "
               <button class='button is-danger' onclick='deleteBlock($row[0])'>Да, удалить</button>
             </div>
             <div class='column'>
-              <p class='bd-notification is-info'><button class='button is-danger' onclick='closeModal()'>Нет, отмена</button></p>
+              <p class='bd-notification is-info'><button class='button is-danger' onclick="."'".'closeModal("deleteAll")'."'".">Нет, отмена</button></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <button class='modal-close is-large' aria-label='close'></button>
+</div>
+<div class='modal' id='modal_deletePhoto'>
+  <div class='modal-background'></div>
+  <div class='modal-content'>
+    <div class='box'>
+      <div class='columns'>
+        <div class='column' style='text-align: center;'>
+          <p class='bd-notification is-info'>Вы уверены?</p>
+          <div class='columns is-mobile'>
+            <div class='column'>
+              <button class='button is-danger' onclick='deletePhoto($row[0])'>Да, удалить</button>
+            </div>
+            <div class='column'>
+              <p class='bd-notification is-info'><button class='button is-danger' onclick="."'".'closeModal("deletePhoto")'."'".">Нет, отмена</button></p>
             </div>
           </div>
         </div>
@@ -163,7 +189,7 @@ if (file_exists($dir)) {
   echo "</div>";
 }
 echo "
-<div class='buttons has-addons is-centered '><button class='button is-danger' onclick='openModal()'>Удалить</button></div>
+<div class='buttons has-addons is-centered '><button class='button is-danger' onclick=".'"'."toggle('deleteAll')".'"'.">Удалить</button></div>
 <script src='js/jscolor.js'></script>
 <script>
 function recolor(){
@@ -234,11 +260,8 @@ document.getElementById('choseClr').style.color = textColor;
   if('$row[7]'!=''){
     document.addEventListener('DOMContentLoaded', recolor);
   }
-  function openModal(){
-    document.getElementById('modal').classList.add('is-active');
-  }
-  function closeModal(){
-    document.getElementById('modal').classList.remove('is-active');
+  function closeModal(id){
+    document.getElementById('modal_'+id).classList.remove('is-active');
   }
   function toggle(id){
     document.getElementById('modal_'+id).classList.add('is-active');
@@ -254,10 +277,33 @@ document.getElementById('choseClr').style.color = textColor;
      }
    );
   }
+  document.getElementById('file').onchange = function() {
+    document.getElementById('form').submit();
+  };
     </script>
  
 ";
+$id = $row[0];
+
+$ds          = DIRECTORY_SEPARATOR;  //1
+$storeFolder = 'Photos/'.$id;   //2
+if (!empty($_FILES)) {
+    $tempFile = $_FILES['file']['tmp_name'];          //3             
+    if (file_exists($storeFolder)) {
+      if(file_exists($storeFolder."/main.jpg")){
+        unlink($storeFolder."/main.jpg");
+        move_uploaded_file($tempFile,$storeFolder."/main.jpg");
+      }
+      else{
+        move_uploaded_file($tempFile, $storeFolder."/main.jpg");
+      }
+    }
+    else{
+    mkdir("Photos/$id");
+    move_uploaded_file($tempFile, $storeFolder."/main.jpg");
+    }
+  }
     }
       mysqli_free_result($result);
   }
-?>
+?> 

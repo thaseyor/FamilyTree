@@ -8,4 +8,12 @@ function deleteBlock(id){
  );
  window.location = 'tree.php';
 }
+function deletePhoto(id){
+    $.post(
+    "handler.php",
+   {
+     deletePhoto: id
+   }
+ );
+}
 </script>

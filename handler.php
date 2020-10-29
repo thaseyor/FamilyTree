@@ -137,4 +137,13 @@ if(isset($_POST['img'])){
     $query ="UPDATE `photos` SET `description`='$description' WHERE person='$person' AND img='$img'";
     $result2 = mysqli_query($link, $query) or die("Ошибка " . mysqli_error($link));
     mysqli_close($link);}
+
+if(isset($_POST['deletePhoto'])){
+    $id=$_POST['deletePhoto'];
+    if (file_exists('Photos/'.$id.'/main.jpg')){
+        unlink('Photos/'.$id.'/main.jpg');
+    }
+   
+}
+
 ?>
