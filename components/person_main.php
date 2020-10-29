@@ -66,8 +66,13 @@ if (file_exists($dir)) {
     echo "<div class='tile'>";
       for($j=(4*$i)-2;$j<(4*$i)+2;$j++){
         if(isset($files[$j])){
+          $imgName=substr($files[$j], 0, strrpos($files[$j], "."));
+          $query1 ="SELECT `description` FROM `photos` WHERE img='$imgName' AND person='$row[0]'";
+    $result1 = mysqli_query($link, $query1) or die("Ошибка " . mysqli_error($link)); 
+    $row1= mysqli_fetch_assoc($result1);
+    $description = $row1['description'];
           echo "
-          <div class='modal' id='modal_".substr($files[$j], 0, strrpos($files[$j], "."))."'>
+          <div class='modal' id='modal_$imgName'>
   <div class='modal-background' onclick='remove()'></div>
   <div class='modal-content'>
   <img src='Photos/$row[0]/gallery/$files[$j]'alt='Image'>
@@ -77,9 +82,9 @@ if (file_exists($dir)) {
           <div class='tile is-parent is-3 ' style='position:relative;'>
             <article class='tile is-child box'>
               <figure class='image is-256x256'>
-                <img src='Photos/$row[0]/gallery/$files[$j]' style='padding-bottom:20px;cursor:pointer' onclick='toggle(".substr($files[$j], 0, strrpos($files[$j], ".")).")'  alt='Placeholder image'>
+                <img src='Photos/$row[0]/gallery/$files[$j]' style='padding-bottom:60px;cursor:pointer' onclick='toggle($imgName)'  alt='Placeholder image'>
               </figure>
-              <p class='subtitle' style='bottom:0;position:absolute;padding-bottom:20px;'>".substr($files[$j], 0, strrpos($files[$j], "."))."</p>
+              <p class='subtitle' style='bottom:0;position:absolute;padding-bottom:60px;'>$description</p>
             </article>
           </div>";
         }

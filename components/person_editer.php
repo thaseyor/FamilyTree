@@ -108,10 +108,10 @@ echo "
           <p class='bd-notification is-info'>Вы уверены?</p>
           <div class='columns is-mobile'>
             <div class='column'>
-              <button class='button is-danger' onclick='deleteBlock($row[0])'>Да</button>
+              <button class='button is-danger' onclick='deleteBlock($row[0])'>Да, удалить</button>
             </div>
             <div class='column'>
-              <p class='bd-notification is-info'><button class='button is-danger' onclick='closeModal()'>Нет</button></p>
+              <p class='bd-notification is-info'><button class='button is-danger' onclick='closeModal()'>Нет, отмена</button></p>
             </div>
           </div>
         </div>
@@ -131,8 +131,13 @@ if (file_exists($dir)) {
     echo "<div class='tile'>";
       for($j=(4*$i)-2;$j<(4*$i)+2;$j++){
         if(isset($files[$j])){
+          $imgName=substr($files[$j], 0, strrpos($files[$j], "."));
+          $query1 ="SELECT `description` FROM `photos` WHERE img='$imgName' AND person='$row[0]'";
+    $result1 = mysqli_query($link, $query1) or die("Ошибка " . mysqli_error($link)); 
+    $row1= mysqli_fetch_assoc($result1);
+    $description = $row1['description'];
           echo "
-          <div class='modal' id='modal_".substr($files[$j], 0, strrpos($files[$j], "."))."'>
+          <div class='modal' id='modal_".$imgName."'>
   <div class='modal-background'></div>
   <div class='modal-content'>
   <img src='Photos/$row[0]/gallery/$files[$j]'alt='Image'>
@@ -140,15 +145,15 @@ if (file_exists($dir)) {
   <button class='modal-close is-large' aria-label='close' ></button>
 </div>
           <div class='tile is-parent is-3 ' style='position:relative;'>
-            <article class='tile is-child box'>
+            <div class='tile is-child box'>
               <figure class='image is-256x256'>
-                <img src='Photos/$row[0]/gallery/$files[$j]' style='padding-bottom:30px;cursor:pointer' onclick='toggle(".substr($files[$j], 0, strrpos($files[$j], ".")).")'  alt='Placeholder image'>
+                <img src='Photos/$row[0]/gallery/$files[$j]' style='padding-bottom:60px;cursor:pointer' onclick='toggle(".$imgName.")'  alt='Placeholder image'>
               </figure>
-              
-              <div class='control'  style='bottom:0;position:absolute;margin-bottom:20px;width:inherit'>
-              <input class='input' type='text' onChange='fileNameChange(".'"'.substr($files[$j], 0, strrpos($files[$j], ".")).'"'.")' id='filename_".substr($files[$j], 0, strrpos($files[$j], "."))."' value='".substr($files[$j], 0, strrpos($files[$j], "."))."'>
+
+              <div class='control mb-4'  style='bottom:0;position:absolute;width:80%'>
+              <textarea  class='textarea' rows='2' placeholder='Description' oninput='fileDescriptionChange(".'"'.$imgName.'"'.")' id='filename_".$imgName."'>$description</textarea>
               </div>
-            </article>
+            </div>
           </div>
           ";
         }
@@ -238,18 +243,16 @@ document.getElementById('choseClr').style.color = textColor;
   function toggle(id){
     document.getElementById('modal_'+id).classList.add('is-active');
   }
-  function fileNameChange(number){
-    var newValue = document.getElementById('filename_'+number).value;
-    if(newValue!=''){
-    var oldValue = number;
+  function fileDescriptionChange(number){
+    var description = document.getElementById('filename_'+number).value;
     $.post(
       'handler.php',
      {
-       id: $row[0],
-       newValue:newValue,
-       oldValue:oldValue
+       person: $row[0],
+       description:description,
+       img:number
      }
-   );}
+   );
   }
     </script>
  
