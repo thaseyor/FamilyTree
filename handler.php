@@ -109,6 +109,12 @@ if(isset($_POST['delete'])){
     $id=$_POST['delete'];
     $query ="DELETE FROM `familytree` WHERE id = '$id'";
     $result = mysqli_query($link, $query) or die("Ошибка " . mysqli_error($link)); 
+    $query ="DELETE FROM `photos` WHERE person = '$id'";
+    $result = mysqli_query($link, $query) or die("Ошибка " . mysqli_error($link)); 
+    $dir = 'Photos/'.$id;
+    array_map('unlink', glob("$dir/gallery/*.*"));
+    array_map('unlink', glob("$dir/*.*"));
+    rmdir($dir);
     $sql = "SELECT * FROM `familytree`";
     $result = mysqli_query($link,$sql);
     $rows = mysqli_num_rows($result);

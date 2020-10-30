@@ -15,5 +15,6 @@ function deletePhoto(id){
      deletePhoto: id
    }
  );
+ document.getElementById('modal_deletePhoto').classList.remove('is-active');
 }
 </script>

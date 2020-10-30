@@ -1,5 +1,5 @@
 <?php
-   $query ="SELECT * FROM `familytree` where id=".$_GET['id'];
+$query ="SELECT * FROM `familytree` where id=".$_GET['id'];
    $result = mysqli_query($link, $query) or die("Ошибка " . mysqli_error($link)); 
    if($result)
 {
@@ -80,22 +80,22 @@ echo "
   </div>
 
   <div class='column'><br>
-  <form action='person.php?id=$row[0]&change=true' enctype='multipart/form-data' method='post' id='form'>
+  <form action='person.php?id=$row[0]&change=true' enctype='multipart/form-data' method='post' id='formMain'>
   <div class='file is-centered'>
   <label class='file-label'>
-    <input class='file-input' id='file' type='file' name='file'>
+    <input class='file-input' id='fileMain' type='file' name='file'>
     <span class='file-cta'>
       <span class='file-icon'>
         <i class='fas fa-upload'></i>
       </span>
       <span class='file-label'>
-        Изменить фото…
+        Изменить главное фото
       </span>
     </span>
   </label>
   </div>
   </form>
-  <div class='buttons has-addons is-centered ' style='margin-top:8px;'><button class='button is-danger' onclick="."'".'toggle("deletePhoto")'."'".">Удалить фото</button></div>
+  <div class='buttons has-addons is-centered ' style='margin-top:8px;'><button class='button is-danger' onclick="."'".'toggle("deletePhoto")'."'".">Удалить главное фото</button></div>
   </div>
   
   <div class='column'><br><div>
@@ -103,7 +103,26 @@ echo "
 <input type='text' oninput='setTextColor(0,$row[0],1)' id='hex' value='$row[7]' style='width:150px;' class='input'>
   </div>
   </div>
-</div></div></section>
+</div>
+
+<div class='column'>
+<form action='person.php?id=$row[0]&change=true' enctype='multipart/form-data' method='post' id='formGallery'>
+<div class='file is-centered'>
+<label class='file-label'>
+  <input class='file-input' id='fileGallery' type='file' name='galleryPhoto'>
+  <span class='file-cta'>
+    <span class='file-icon'>
+      <i class='fas fa-upload'></i>
+    </span>
+    <span class='file-label'>
+      Добавить фото в галлерею
+    </span>
+  </span>
+</label>
+</div>
+</form></div>
+</div></section>
+
 <div class='modal' id='modal_deleteAll'>
   <div class='modal-background'></div>
   <div class='modal-content'>
@@ -145,7 +164,8 @@ echo "
     </div>
   </div>
   <button class='modal-close is-large' aria-label='close'></button>
-</div>";
+</div>
+";
 $dir    = 'Photos/'. $row[0]. '/gallery';
 if (file_exists($dir)) {
   $files = scandir($dir);
@@ -161,7 +181,12 @@ if (file_exists($dir)) {
           $query1 ="SELECT `description` FROM `photos` WHERE img='$imgName' AND person='$row[0]'";
     $result1 = mysqli_query($link, $query1) or die("Ошибка " . mysqli_error($link)); 
     $row1= mysqli_fetch_assoc($result1);
+if(!empty($row1['description'])){
     $description = $row1['description'];
+  }
+  else{
+    $description = '';
+  }
           echo "
           <div class='modal' id='modal_".$imgName."'>
   <div class='modal-background'></div>
@@ -177,7 +202,7 @@ if (file_exists($dir)) {
               </figure>
 
               <div class='control mb-4'  style='bottom:0;position:absolute;width:80%'>
-              <textarea  class='textarea' rows='2' placeholder='Description' oninput='fileDescriptionChange(".'"'.$imgName.'"'.")' id='filename_".$imgName."'>$description</textarea>
+              <textarea  class='textarea has-fixed-size' rows='2' placeholder='Description' oninput='fileDescriptionChange(".'"'.$imgName.'"'.")' id='filename_".$imgName."'>$description</textarea><a class='delete'></a>
               </div>
             </div>
           </div>
@@ -277,8 +302,11 @@ document.getElementById('choseClr').style.color = textColor;
      }
    );
   }
-  document.getElementById('file').onchange = function() {
-    document.getElementById('form').submit();
+  document.getElementById('fileMain').onchange = function() {
+    document.getElementById('formMain').submit();
+  };
+  document.getElementById('fileGallery').onchange = function() {
+    document.getElementById('formGallery').submit();
   };
     </script>
  
@@ -288,6 +316,7 @@ $id = $row[0];
 $ds          = DIRECTORY_SEPARATOR;  //1
 $storeFolder = 'Photos/'.$id;   //2
 if (!empty($_FILES)) {
+  if(isset($_FILES['file'])){
     $tempFile = $_FILES['file']['tmp_name'];          //3             
     if (file_exists($storeFolder)) {
       if(file_exists($storeFolder."/main.jpg")){
@@ -303,7 +332,48 @@ if (!empty($_FILES)) {
     move_uploaded_file($tempFile, $storeFolder."/main.jpg");
     }
   }
+  if(isset($_FILES['galleryPhoto'])){
+    $tempFile = $_FILES['galleryPhoto']['tmp_name'];          //3 
+    $NewPhotoNumber=1;            
+    if (file_exists($storeFolder)) {
+      if(file_exists($storeFolder."/gallery")){
+        $files = scandir($dir);
+        unset($files[0]);
+        unset($files[1]);
+        $NewPhotoNumber=count($files)+1;
+        move_uploaded_file($tempFile,$storeFolder."/gallery/$NewPhotoNumber.png");
+      }
+      else{
+        mkdir("Photos/$id/gallery");
+        move_uploaded_file($tempFile, $storeFolder."/gallery/$NewPhotoNumber.png");
+      }
     }
-      mysqli_free_result($result);
+    else{
+    mkdir("Photos/$id");
+    mkdir("Photos/$id/gallery");
+    move_uploaded_file($tempFile, $storeFolder."/gallery/$NewPhotoNumber.png");
+    }
+
+    $query ="SELECT `id` FROM `photos` WHERE 1";
+    $result = mysqli_query($link, $query) or die("Ошибка " . mysqli_error($link)); 
+    $rows = mysqli_num_rows($result);
+    $idNew = 1;
+     for ($i = 0 ; $i < $rows ; ++$i)
+   {
+       $row = mysqli_fetch_row($result);
+       if($idNew == $row[0])
+       {
+           $idNew =$idNew+1;
+       }
+       else{
+           break;
+       }
+   }
+   $query ="INSERT INTO `photos`(`id`,`person`, `img`) VALUES ('$idNew','$id','$NewPhotoNumber')";
+   $result = mysqli_query($link, $query) or die("Ошибка " . mysqli_error($link)); 
+   echo "<script> window.location = 'person.php?id=$id&change=true';</script>";
+  }
+}
+    }
   }
 ?> 
