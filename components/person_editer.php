@@ -195,15 +195,18 @@ if(!empty($row1['description'])){
   </div>
   <button class='modal-close is-large' aria-label='close' ></button>
 </div>
-          <div class='tile is-parent is-3 ' style='position:relative;'>
+          <div class='tile is-parent is-3 ' id='tile_$imgName' style='position:relative;'>
             <div class='tile is-child box'>
+            <a class='delete ' style='position:absolute;z-index:10;right:1.5rem;margin-top:-0.5rem;background-color:hsl(348, 100%, 61%)' onClick='deletePhotoFromGallery($imgName,$row[0])' onMouseOver=".'"'."this.style.backgroundColor= 'hsl(348, 100%, 41%)'".'"'."
+            onMouseOut=".'"'."this.style.backgroundColor='hsl(348, 100%, 61%)'".'"'."></a>
               <figure class='image is-256x256'>
                 <img src='Photos/$row[0]/gallery/$files[$j]' style='padding-bottom:60px;cursor:pointer' onclick='toggle(".$imgName.")'  alt='Placeholder image'>
               </figure>
 
               <div class='control mb-4'  style='bottom:0;position:absolute;width:80%'>
-              <textarea  class='textarea has-fixed-size' rows='2' placeholder='Description' oninput='fileDescriptionChange(".'"'.$imgName.'"'.")' id='filename_".$imgName."'>$description</textarea><a class='delete'></a>
-              </div>
+              <div class='field is-horizontal'>
+              <textarea  class='textarea has-fixed-size' rows='2' placeholder='Description' oninput='fileDescriptionChange(".'"'.$imgName.'"'.")' id='filename_".$imgName."'>$description</textarea>
+              </div></div>
             </div>
           </div>
           ";
@@ -340,7 +343,12 @@ if (!empty($_FILES)) {
         $files = scandir($dir);
         unset($files[0]);
         unset($files[1]);
-        $NewPhotoNumber=count($files)+1;
+        for($b=0;$b<count($files);++$b){
+        foreach($files as $value){
+          if ($NewPhotoNumber==$value){
+            $NewPhotoNumber+=1;
+          }
+        }}
         move_uploaded_file($tempFile,$storeFolder."/gallery/$NewPhotoNumber.png");
       }
       else{

@@ -151,5 +151,14 @@ if(isset($_POST['deletePhoto'])){
     }
    
 }
+if(isset($_POST['deletePhotoFromGallery'])){
+    $deletePhotoFromGallery=$_POST['deletePhotoFromGallery'];
+    $id=$_POST['id'];
+    $query ="DELETE FROM `photos` WHERE img = '$deletePhotoFromGallery' AND person='$id'";
+    $result = mysqli_query($link, $query) or die("Ошибка " . mysqli_error($link)); 
+    if (file_exists('Photos/'.$id.'/gallery'.'/'.$deletePhotoFromGallery.'.png')){
+        unlink('Photos/'.$id.'/gallery'.'/'.$deletePhotoFromGallery.'.png');
+    }
+}
 
 ?>
