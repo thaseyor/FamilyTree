@@ -83,7 +83,7 @@ echo "
   <form action='person.php?id=$row[0]&change=true' enctype='multipart/form-data' method='post' id='formMain'>
   <div class='file is-centered'>
   <label class='file-label'>
-    <input class='file-input' id='fileMain' type='file' name='file'>
+    <input class='file-input' id='fileMain' type='file' name='file' accept='image/*'>
     <span class='file-cta'>
       <span class='file-icon'>
         <i class='fas fa-upload'></i>
@@ -109,7 +109,7 @@ echo "
 <form action='person.php?id=$row[0]&change=true' enctype='multipart/form-data' method='post' id='formGallery'>
 <div class='file is-centered'>
 <label class='file-label'>
-  <input class='file-input' id='fileGallery' type='file' name='galleryPhoto'>
+  <input class='file-input' id='fileGallery' type='file' name='galleryPhoto' accept='image/*'>
   <span class='file-cta'>
     <span class='file-icon'>
       <i class='fas fa-upload'></i>
