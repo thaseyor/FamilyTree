@@ -10,20 +10,8 @@ $query ="SELECT * FROM `familytree`";
   for ($i = 0 ; $i < $rows ; ++$i)
   {
       $row = mysqli_fetch_row($result);
-echo "\n dragElement(document.getElementById('block_$row[0]'),$row[0]);";
+echo "dragElement(document.getElementById('block_$row[0]'),$row[0]);";
     }
-  }$query ="SELECT * FROM `familytree`";
-  $result = mysqli_query($link, $query) or die("Ошибка " . mysqli_error($link)); 
-  if($result)
-{
- $rows = mysqli_num_rows($result); // количество полученных строк
-    echo 'window.onbeforeunload = function(e) {   ';
-    for ($i = 0 ; $i < $rows ; ++$i)
-  {
-      $row = mysqli_fetch_row($result);
-echo "savePosition(".$row[0].");";
-    }
-    echo '};';
       mysqli_free_result($result);
   }
 ?>
@@ -61,6 +49,7 @@ echo "savePosition(".$row[0].");";
     new_x=(elmnt.offsetLeft - pos1);
     elmnt.style.top =  new_y + "px";
     elmnt.style.left = new_x + "px";
+    
  ctx.clearRect(0, 0, canvas.width, canvas.height);
  <?php
 $query ="SELECT * FROM `familytree` ORDER BY `familytree`.`id` ASC";
@@ -84,15 +73,7 @@ for ($i = 0 ; $i < $rows ; ++$i)
   }
 
   function closeDragElement() {
-    // stop moving when mouse button is released:
-    document.onmouseup = null;
-    document.onmousemove = null;
-  }
-}
-function savePosition(id){
-  new_y=document.getElementById('block_'+id).style.top;
-  new_x=document.getElementById('block_'+id).style.left;
-  $.post(
+	  $.post(
     "handler.php",
    {
      y: new_y,
@@ -100,5 +81,9 @@ function savePosition(id){
      id: id
    }
  );
+    // stop moving when mouse button is released:
+    document.onmouseup = null;
+    document.onmousemove = null;
+  }
 }
 </script>
